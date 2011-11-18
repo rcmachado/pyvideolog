@@ -2,6 +2,8 @@ import httplib
 import urllib
 
 class Videolog(object):
+    _auth_hash = None
+
     def __init__(self, url, token):
         self._url = url
         self._token = token
@@ -19,4 +21,8 @@ class Videolog(object):
         response = self._conn.getresponse()
         content = response.read()
 
-        return content.split('=', 1)[1]
+        if content == "LOGIN OU SENHA INCORRETOS":
+            raise ValueError("Incorrect login and password")
+
+        self._auth_hash = content.split('=', 1)[1]
+        return True
