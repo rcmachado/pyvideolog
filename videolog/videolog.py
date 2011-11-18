@@ -16,7 +16,7 @@ class Videolog(object):
         params = urllib.urlencode({'login': login, 'senha': passwd})
         self._conn.request('POST', '/usuario/login', params, headers)
 
-        response = conn.getresponse()
+        response = self._conn.getresponse()
         content = response.read()
 
         return content.split('=', 1)[1]

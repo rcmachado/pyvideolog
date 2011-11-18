@@ -15,12 +15,13 @@ class VideologTestCase(unittest2.TestCase):
     @fudge.patch('httplib.HTTPConnection')
     def test_can_login(self, HTTPConnection):
         headers = {
-            'Token': '0123my_token'
+            'Token': '0123my_token',
+            'Content-type': 'application/x-www-form-urlencoded',
         }
         (HTTPConnection.expects_call()
             .with_args("<api_url>").returns_fake()
             .expects("request")
-            .with_matching_args("POST", "/usuario/login", arg.any(), headers)
+            .with_args("POST", "/usuario/login", arg.any(), headers)
             .expects("getresponse")
             .returns_fake()
             .expects("read")
