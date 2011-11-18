@@ -1,0 +1,4 @@
+coverage
+fudge
+nose
+unittest2
