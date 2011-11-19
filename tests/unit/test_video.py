@@ -8,8 +8,9 @@ import unittest2
 import fudge
 
 from videolog.video import Video
+from tests.unit.testcase import BaseTestCase
 
-class VideoTestCase(unittest2.TestCase):
+class VideoTestCase(BaseTestCase):
     def setUp(self):
         fudge.clear_calls()
         fudge.clear_expectations()
@@ -38,19 +39,11 @@ class VideoTestCase(unittest2.TestCase):
         ]
 
         headers = {"Token": "0123token"}
-
         params = {"q":"cool video"}
-        encoded_params = urllib.urlencode(params)
 
-        (HTTPConnection.expects_call()
-            .with_args("<api_url>").returns_fake()
-            .expects("request")
-            .with_args("GET", "/video/busca.json", encoded_params, headers)
-            .expects("getresponse")
-            .returns_fake()
-            .has_attr(status=httplib.OK)
-            .expects("read")
-            .returns(json.dumps(expected_response)))
+        self.httpconnection_mock(HTTPConnection, 'GET', '<api_url>',
+                                 '/video/busca.json', params,
+                                 headers, json.dumps(expected_response))
 
         video_api = Video("<api_url>", "0123token")
         videos = video_api.search("cool video")
