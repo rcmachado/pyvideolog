@@ -2,7 +2,7 @@ import unittest2
 import fudge
 from fudge.inspector import arg
 
-from videolog.videolog import Videolog
+from videolog.base import Videolog
 
 class VideologTestCase(unittest2.TestCase):
     def setUp(self):
