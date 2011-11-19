@@ -21,7 +21,6 @@ class VideoTestCase(unittest2.TestCase):
     def test_search_for_video(self, HTTPConnection):
         expected_response = [
             {
-                #"criacao": datetime.strptime("2009-03-14T08:07:38", "%Y-%m-%dT%H:%M:%S"),
                 "criacao": "2009-03-14T08:07:38",
                 "privacidade": "0",
                 "titulo": "Curso de Shell Script Parte 3 - Comando test",
@@ -55,3 +54,6 @@ class VideoTestCase(unittest2.TestCase):
 
         video_api = Video("<api_url>", "0123token")
         videos = video_api.search("cool video")
+
+        criacao = datetime.strptime("2009-03-14T08:07:38", "%Y-%m-%dT%H:%M:%S")
+        self.assertEqual(videos[0]['criacao'], criacao)
