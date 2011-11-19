@@ -1,8 +1,10 @@
+import httplib
+
 import unittest2
 import fudge
 from fudge.inspector import arg
 
-from videolog.core import Videolog
+from videolog.core import APIError, Videolog
 
 class VideologTestCase(unittest2.TestCase):
     def setUp(self):
@@ -24,6 +26,7 @@ class VideologTestCase(unittest2.TestCase):
             .with_args("POST", "/usuario/login", arg.any(), headers)
             .expects("getresponse")
             .returns_fake()
+            .has_attr(status=httplib.OK)
             .expects("read")
             .returns("Autenticacao=HASHAUTENTICACAO"))
 
@@ -42,9 +45,28 @@ class VideologTestCase(unittest2.TestCase):
             .with_args("POST", "/usuario/login", arg.any(), headers)
             .expects("getresponse")
             .returns_fake()
+            .has_attr(status=httplib.OK)
             .expects("read")
             .returns("LOGIN OU SENHA INCORRETOS"))
 
         api = Videolog("<api_url>", "0123my_token")
         with self.assertRaises(ValueError):
             api.login("<incorrect_login>", "<incorrect_passwd>")
+
+    @fudge.patch('httplib.HTTPConnection')
+    def test_can_recover_from_response_error(self, HTTPConnection):
+        headers = {
+            'Token': '0123my_token',
+            'Content-type': 'application/x-www-form-urlencoded',
+        }
+        (HTTPConnection.expects_call()
+            .with_args("<api_url>").returns_fake()
+            .expects("request")
+            .with_args("POST", "/usuario/login", arg.any(), headers)
+            .expects("getresponse")
+            .returns_fake()
+            .has_attr(status=httplib.INTERNAL_SERVER_ERROR))
+
+        api = Videolog("<api_url>", "0123my_token")
+        with self.assertRaises(APIError):
+            api.login("<login>", "<passwd>")
