@@ -1,7 +1,7 @@
 import urllib
 import json
 
-from videolog.base import Videolog
+from videolog.core import Videolog
 
 class Video(Videolog):
     def search(self, term, user_id=None):
