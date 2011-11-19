@@ -9,8 +9,20 @@ class Video(Videolog):
     AMIGOS = "1"
     PRIVADO = "2"
 
-    def search(self, term, user_id=None):
+    def search(self, term, channel=None, user_id=None, limit=None, offset=None):
         params = {'q': term}
+
+        if channel is not None:
+            params['canal'] = int(channel)
+
+        if user_id is not None and int(user_id) != 0:
+            params['usuario'] = int(user_id)
+
+        if limit is not None and int(limit) != 0:
+            params['itens'] = int(limit)
+
+        if offset is not None:
+            params['inicio'] = int(offset)
 
         content = self._make_request('GET', '/video/busca.json', params)
         result = json.loads(content)
