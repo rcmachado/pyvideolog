@@ -11,11 +11,5 @@ class Video(Videolog):
 
         params = {'q': term}
 
-        encoded_params = urllib.urlencode(params)
-        self._conn.request('GET', '/video/busca.json', encoded_params, headers)
-
-        response = self._conn.getresponse()
-        content = response.read()
-
+        content = self._make_request('GET', '/video/busca.json', params, headers)
         return json.loads(content)
-

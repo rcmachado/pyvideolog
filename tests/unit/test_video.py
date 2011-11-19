@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import httplib
 import urllib
 import json
 
@@ -48,6 +49,7 @@ class VideoTestCase(unittest2.TestCase):
             .with_args("GET", "/video/busca.json", encoded_params, headers)
             .expects("getresponse")
             .returns_fake()
+            .has_attr(status=httplib.OK)
             .expects("read")
             .returns(json.dumps(expected_response)))
 
