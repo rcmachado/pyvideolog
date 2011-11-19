@@ -10,13 +10,9 @@ class Video(Videolog):
     PRIVADO = "2"
 
     def search(self, term, user_id=None):
-        headers = {
-            "Token": self._token,
-        }
-
         params = {'q': term}
 
-        content = self._make_request('GET', '/video/busca.json', params, headers)
+        content = self._make_request('GET', '/video/busca.json', params)
         result = json.loads(content)
 
         response = []
