@@ -10,6 +10,11 @@ Pré-requisitos
 
 - Python 2.6+
 
+Instalação
+----------
+
+    $ pip install videolog
+
 Exemplos
 --------
 
