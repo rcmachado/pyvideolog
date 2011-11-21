@@ -2,3 +2,4 @@ coverage
 fudge
 nose
 unittest2
+https://github.com/marcelnicolay/simplexml/zipball/0.1.1
