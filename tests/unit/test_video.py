@@ -50,3 +50,8 @@ class VideoTestCase(BaseTestCase):
 
         criacao = datetime.strptime("2009-03-14T08:07:38", "%Y-%m-%dT%H:%M:%S")
         self.assertEqual(videos[0]['criacao'], criacao)
+
+    def test_search_for_video_without_params_raises_error(self):
+        video_api = Video("<api_url>", "0123token")
+        with self.assertRaises(ValueError):
+            videos = video_api.search()
