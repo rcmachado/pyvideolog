@@ -5,9 +5,9 @@ import json
 from videolog.core import Videolog
 
 class Video(Videolog):
-    PUBLICO = "0"
-    AMIGOS = "1"
-    PRIVADO = "2"
+    PUBLIC = "0"
+    FRIENDS = "1"
+    PRIVATE = "2"
 
     def search(self, term=None, channel=None, user_id=None, limit=None, offset=None,
         metatags=None):
