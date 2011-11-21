@@ -5,8 +5,12 @@ import json
 from videolog.core import Videolog
 
 class User(Videolog):
-    def find_videos(self, user):
-        content = self._make_request('GET', '/usuario/%s/videos.json' % user)
+    def find_videos(self, user, privacy=None):
+        path = '/usuario/%s/videos.json' % user
+        if privacy is not None:
+            path = "%s?privacidade=%s" % (path, privacy)
+
+        content = self._make_request('GET', path)
         usuario = json.loads(content)
 
         response = []
