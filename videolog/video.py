@@ -9,7 +9,8 @@ class Video(Videolog):
     AMIGOS = "1"
     PRIVADO = "2"
 
-    def search(self, term, channel=None, user_id=None, limit=None, offset=None):
+    def search(self, term, channel=None, user_id=None, limit=None, offset=None,
+        metatags=None):
         params = {'q': term}
 
         if channel is not None:
@@ -23,6 +24,12 @@ class Video(Videolog):
 
         if offset is not None:
             params['inicio'] = int(offset)
+
+        if metatags:
+            tags = []
+            for metatag in metatags:
+                tags.append("%s:%s" % metatag[0], metatag[1])
+            params['metatags'] = ",".join(tags)
 
         content = self._make_request('GET', '/video/busca.json', params)
         result = json.loads(content)
