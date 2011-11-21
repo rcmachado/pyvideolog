@@ -12,14 +12,16 @@ class Videolog(object):
         self._token = token
         self._conn = httplib.HTTPConnection(self._url)
 
-    def _make_request(self, method, path, params, headers=dict()):
+    def _make_request(self, method, path, params=None, headers=dict()):
         full_headers = dict(headers)
         full_headers['Token'] = self._token
         if self._auth_hash:
             full_headers['Autenticacao'] = self._auth_hash
 
-        encoded_params = urllib.urlencode(params)
-        self._conn.request(method, path, encoded_params, full_headers)
+        if params:
+            params = urllib.urlencode(params)
+
+        self._conn.request(method, path, params, full_headers)
         response = self._conn.getresponse()
 
         if response.status != httplib.OK:
