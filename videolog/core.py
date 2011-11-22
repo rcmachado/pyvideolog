@@ -18,8 +18,10 @@ class Videolog(object):
         if self._auth_hash:
             full_headers['Autenticacao'] = self._auth_hash
 
-        encoded_params = urllib.urlencode(params)
-        self._conn.request(method, path, encoded_params, full_headers)
+        if type(params) == dict:
+            params = urllib.urlencode(params)
+
+        self._conn.request(method, path, params, full_headers)
         response = self._conn.getresponse()
 
         if response.status != httplib.OK:

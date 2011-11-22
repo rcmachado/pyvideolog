@@ -1,14 +1,10 @@
-<<<<<<< HEAD
-from videolog.videolog import Videolog
-import simplexml
-import httplib
-=======
 from datetime import datetime
+import httplib
 import urllib
 import json
+import os
 
 from videolog.core import Videolog
->>>>>>> 01cb29df936d6872cd921f634d21f49e859cfe6f
 
 class Video(Videolog):
     PUBLICO = "0"
@@ -51,36 +47,37 @@ class Video(Videolog):
             video['criacao'] = datetime.strptime(video['criacao'], "%Y-%m-%dT%H:%M:%S")
             response.append(video)
 
-<<<<<<< HEAD
-    def __init__(self):
-        pass
-
-    def upload(self, file_path):
+        return response
+    
+    def upload(self, file_name, dirname, title, description, channel, uuid, privacy=0, metatags=''):
         
         video_dados = {
-            'videos': {
-                'titulo': '',
-                'descricao': '',
-                'canal': 2,
-                'privavidade': 2,
-                'metatags': ''
+            'video': {
+                'titulo': title,
+                'descricao': description,
+                'canal': channel,
+                'privacidade': privacy,
+                'metatags': metatags
             }
         }
         headers = {
-            'Token': self._token,
-            'Autenticacao': '',
+            'Autenticacao': self._auth_hash,
             'Content-Type': "application/x-www-form-urlencoded"
         }
+        content    = self._make_request('POST', '/video.json', params=json.dumps(video_dados), headers=headers)
+        video_uuid = json.loads(content)[0]['video']['uuid']
 
-        self._conn.request('POST', '/video.xml', body=simplexml.dumps(video_dados), headers=headers)
-        response = self._conn.getresponse()
-        content = response.read()
+        file_path = "%s/%s" % (dirname.rstrip('/'), file_name)
+        if not os.path.isfile(file_path):
+            raise ValueError("File does not exist %s" % file_path)
 
-        status, reason, content = self.post_multipart(host='api.videolog.tv', selector='/video/%s/upload' % video_uuid, files=(("video", file_name, file_data),), headers=headers)
-        
-        if status == 200:
-            print "[videolog] - Upload realizado com sucesso %s, %s" % (status, content)
-            return
+        file_data  = open(file_path).read()
+    
+        try:
+            self.post_multipart(selector='/video/%s/upload' % video_uuid, files=(("video", file_name, file_data),), headers=headers)
+            return True
+        except APIError, e:
+            return False
 
     def encode_multipart_formdata(self, files):
         BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
@@ -98,19 +95,9 @@ class Video(Videolog):
         content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
         return content_type, body
 
-    def post_multipart(self, host, selector, files, headers):
+    def post_multipart(self, selector, files, headers):
         content_type, body = self.encode_multipart_formdata(files)
-        h = httplib.HTTPConnection(host)
 
         headers['Content-Type'] = content_type
         
-        print "[videolog] - post multipart %s" % (headers)
-
-        h.request('POST', selector, body, headers)
-        res = h.getresponse()
-
-        return res.status, res.reason, res.read()
-        
-=======
-        return response
->>>>>>> 01cb29df936d6872cd921f634d21f49e859cfe6f
+        self._conn.request(method='POST', path=selector, params=body, headers=headers)
