@@ -3,8 +3,11 @@ import httplib
 import urllib
 import json
 import os
+import simplexml
+import logging
+import mimetypes
 
-from videolog.core import Videolog
+from videolog.core import Videolog, APIError
 
 class Video(Videolog):
     PUBLIC = "0"
@@ -49,7 +52,7 @@ class Video(Videolog):
 
         return response
     
-    def upload(self, file_name, dirname, title, description, channel, uuid, privacy=0, metatags=''):
+    def upload(self, file_name, dirname, title, description, channel, privacy=0, metatags=''):
         
         video_dados = {
             'video': {
@@ -64,19 +67,19 @@ class Video(Videolog):
             'Autenticacao': self._auth_hash,
             'Content-Type': "application/x-www-form-urlencoded"
         }
-        content    = self._make_request('POST', '/video.json', params=json.dumps(video_dados), headers=headers)
-        video_uuid = json.loads(content)[0]['video']['uuid']
+        content    = self._make_request('POST', '/video.xml', params=simplexml.dumps(video_dados), headers=headers)
+        video_uuid = simplexml.loads(content)['video']['uuid']
 
         file_path = "%s/%s" % (dirname.rstrip('/'), file_name)
         if not os.path.isfile(file_path):
             raise ValueError("File does not exist %s" % file_path)
 
-        file_data  = open(file_path).read()
-    
+        file_data = open(file_path).read()
         try:
             self.post_multipart(selector='/video/%s/upload' % video_uuid, files=(("video", file_name, file_data),), headers=headers)
             return True
         except APIError, e:
+            logging.info("[Videolog][Video Upload] - Error >> ", e.message)
             return False
 
     def encode_multipart_formdata(self, files):
@@ -100,4 +103,7 @@ class Video(Videolog):
 
         headers['Content-Type'] = content_type
         
-        self._conn.request(method='POST', path=selector, params=body, headers=headers)
+        self._make_request('POST', selector, params=body, headers=headers)
+    
+    def get_content_type(self, filename):
+        return mimetypes.guess_type(filename)[0] or 'application/octet-stream'        

@@ -3,6 +3,7 @@ from datetime import datetime
 import httplib
 import urllib
 import json
+import simplexml
 
 import unittest2
 import fudge
@@ -58,17 +59,13 @@ class VideoTestCase(BaseTestCase):
 
     @fudge.patch('httplib.HTTPConnection')
     def test_can_upload_video(self, HTTPConnection):
-        expected_response = [
-            {
-                "video": {"uuid": "shouldBeUUID"}
-            }
-        ]
+        expected_response = {"video": {"uuid": "shouldBeUUID"}}
+        
         file_name = 'ShouldBeFileName'
         dirname = 'ShouldBeDirName'
         title = 'ShouldBeTitle'
         description = 'ShouldBeDescription'
         channel = 'ShouldBeChannel'
-        uuid = 'ShouldBeUuid'
         privacy = 0
         metatags = 'ShouldBeMetatags'
 
@@ -87,7 +84,7 @@ class VideoTestCase(BaseTestCase):
             'Content-Type': 'application/x-www-form-urlencoded'
         }
         
-        self.httpconnection_mock(HTTPConnection, 'POST', '<api_url>', '/video.json', json.dumps(video_dados), headers, json.dumps(expected_response))
+        self.httpconnection_mock(HTTPConnection, 'POST', '<api_url>', '/video.xml', simplexml.dumps(video_dados), headers, simplexml.dumps(expected_response))
 
         video_api = Video("<api_url>", "shouldBeToken")
         video_api._auth_hash = 'shouldBeAuth'
@@ -101,6 +98,6 @@ class VideoTestCase(BaseTestCase):
             with fudge.patch("__builtin__.open") as open_fake:
                 open_fake.is_callable().with_args('ShouldBeDirName/ShouldBeFileName').returns_fake().expects('read').returns('shouldBeFileData')
 
-                video_upload = video_api.upload(file_name=file_name, dirname=dirname, title=title, description=description, channel=channel, uuid=uuid, privacy=privacy, metatags=metatags)
+                video_upload = video_api.upload(file_name=file_name, dirname=dirname, title=title, description=description, channel=channel, privacy=privacy, metatags=metatags)
 
         self.assertTrue(video_upload)
