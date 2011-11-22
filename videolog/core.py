@@ -12,7 +12,7 @@ class Videolog(object):
         self._token = token
         self._conn = httplib.HTTPConnection(self._url)
 
-    def _make_request(self, method, path, params, headers=dict()):
+    def _make_request(self, method, path, params=None, headers=dict()):
         full_headers = dict(headers)
         full_headers['Token'] = self._token
         if self._auth_hash:
