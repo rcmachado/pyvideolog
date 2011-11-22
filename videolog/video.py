@@ -79,7 +79,7 @@ class Video(Videolog):
             self.post_multipart(selector='/video/%s/upload' % video_uuid, files=(("video", file_name, file_data),), headers=headers)
             return True
         except APIError, e:
-            logging.info("[Videolog][Video Upload] - Error >> ", e.message)
+            logging.info("[Videolog][Video Upload] - Error >> %s" % e)
             return False
 
     def encode_multipart_formdata(self, files):
