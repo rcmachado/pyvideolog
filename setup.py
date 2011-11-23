@@ -33,6 +33,7 @@ setup(
                    ],
     packages = find_packages(),
     package_dir = {"videolog": "videolog"},
+    requires=['simplexml>=0.1.4']
     include_package_data = True,
-    test_suite="nose.collector"
+    test_suite="nose.collector",
 )
