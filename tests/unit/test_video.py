@@ -3,10 +3,11 @@ from datetime import datetime
 import httplib
 import urllib
 import json
-import simplexml
 
+import simplexml
 import unittest2
 import fudge
+
 from videolog import video
 from videolog.video import Video
 from tests.unit.testcase import BaseTestCase
@@ -60,7 +61,7 @@ class VideoTestCase(BaseTestCase):
     @fudge.patch('httplib.HTTPConnection')
     def test_can_upload_video(self, HTTPConnection):
         expected_response = {"video": {"uuid": "shouldBeUUID"}}
-        
+
         file_name = 'ShouldBeFileName'
         dirname = 'ShouldBeDirName'
         title = 'ShouldBeTitle'

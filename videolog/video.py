@@ -3,9 +3,10 @@ import httplib
 import urllib
 import json
 import os
-import simplexml
 import logging
 import mimetypes
+
+import simplexml
 
 from videolog.core import Videolog, APIError
 
@@ -14,8 +15,8 @@ class Video(Videolog):
     FRIENDS = "1"
     PRIVATE = "2"
 
-    def search(self, term=None, channel=None, user_id=None, limit=None, offset=None,
-        metatags=None):
+    def search(self, term=None, channel=None, user_id=None, limit=None,
+        offset=None, metatags=None):
         params = dict()
 
         if term is not None:
@@ -51,9 +52,8 @@ class Video(Videolog):
             response.append(video)
 
         return response
-    
+
     def upload(self, file_name, dirname, title, description, channel, privacy=0, metatags=''):
-        
         video_dados = {
             'video': {
                 'titulo': title,
@@ -102,8 +102,8 @@ class Video(Videolog):
         content_type, body = self.encode_multipart_formdata(files)
 
         headers['Content-Type'] = content_type
-        
+
         self._make_request('POST', selector, params=body, headers=headers)
-    
+
     def get_content_type(self, filename):
-        return mimetypes.guess_type(filename)[0] or 'application/octet-stream'        
+        return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
