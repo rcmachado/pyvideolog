@@ -16,7 +16,7 @@ class User(Videolog):
         response = []
         for video in usuario['usuario']['videos']:
             video['criacao'] = datetime.strptime(video['criacao'], "%Y-%m-%dT%H:%M:%S")
-            video["duracao"] = time.strptime("00:00:05", "%H:%M:%S")
+            video["duracao"] = time.strptime(video['duracao'], "%H:%M:%S")
             if video['mobile'].lower() == "s":
                 video['mobile'] = True
             else:
