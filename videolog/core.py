@@ -20,8 +20,10 @@ class Videolog(object):
 
         if type(params) == dict:
             params = urllib.urlencode(params)
+        if params is not None:
+            params = str(params)
 
-        self._conn.request(method, path, params, full_headers)
+        self._conn.request(method, str(path), params, full_headers)
         response = self._conn.getresponse()
 
         if response.status != httplib.OK:

@@ -49,6 +49,10 @@ class Video(Videolog):
         response = []
         for video in result:
             video['criacao'] = datetime.strptime(video['criacao'], "%Y-%m-%dT%H:%M:%S")
+            if video['mobile'].lower() == 's':
+                video['mobile'] = True
+            else:
+                video['mobile'] = False
             response.append(video)
 
         return response

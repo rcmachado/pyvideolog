@@ -73,8 +73,8 @@ class UserTestCase(BaseTestCase):
         ]
 
         self.httpconnection_mock(HTTPConnection, "GET", '<api_url>',
-                                 '/usuario/844849/videos.json?privacidade=2', None,
-                                 headers, json.dumps(mock_response))
+                                 '/usuario/844849/videos.json?privacidade=2',
+                                 None, headers, json.dumps(mock_response))
 
         user_api = User("<api_url>", "0123token")
         videos = user_api.find_videos(user=844849, privacy=Video.PRIVATE)
