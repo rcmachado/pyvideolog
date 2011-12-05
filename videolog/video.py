@@ -10,6 +10,8 @@ import simplexml
 
 from videolog.core import Videolog, APIError
 
+_logger = logging.getLogger('videolog')
+
 class Video(Videolog):
     PUBLIC = "0"
     FRIENDS = "1"
@@ -67,8 +69,8 @@ class Video(Videolog):
                 'metatags': metatags
             }
         }
+
         headers = {
-            'Autenticacao': self._auth_hash,
             'Content-Type': "application/x-www-form-urlencoded"
         }
         content    = self._make_request('POST', '/video.xml', params=simplexml.dumps(video_dados), headers=headers)
@@ -83,7 +85,7 @@ class Video(Videolog):
             self.post_multipart(selector='/video/%s/upload' % video_uuid, files=(("video", file_name, file_data),), headers=headers)
             return True
         except APIError, e:
-            logging.info("[Videolog][Video Upload] - Error >> %s" % e)
+            _logger.info("Error uploading video %s: %s" % (file_name, e))
             return False
 
     def encode_multipart_formdata(self, files):

@@ -1,5 +1,8 @@
 import httplib
+import logging
 import urllib
+
+_logger = logging.getLogger('videolog')
 
 class APIError(Exception):
     pass
@@ -23,6 +26,7 @@ class Videolog(object):
         if params is not None:
             params = str(params)
 
+        _logger.debug("Make request to %s%s" % (self._url, str(path)))
         self._conn.request(method, str(path), params, full_headers)
         response = self._conn.getresponse()
 
@@ -42,5 +46,6 @@ class Videolog(object):
         if content == "LOGIN OU SENHA INCORRETOS":
             raise ValueError("Incorrect login and password")
 
+        _logger.info("Logged in API using %s as login" % login)
         self._auth_hash = content.split('=', 1)[1]
         return True
