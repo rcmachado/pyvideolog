@@ -57,6 +57,18 @@ class Video(Videolog):
 
         return response
 
+    def info(self, video_id):
+        content = self._make_request('GET', '/video/%s.json' % video_id)
+        result = json.loads(content)
+        video = result['video']
+        video['criacao'] = datetime.strptime(video['criacao'], "%Y-%m-%dT%H:%M:%S")
+        if video['mobile'].lower() == 's':
+            video['mobile'] = True
+        else:
+            video['mobile'] = False
+
+        return video
+
     def upload(self, file_name, dirname, title, description, channel, privacy=0, metatags=''):
         video_dados = {
             'video': {
