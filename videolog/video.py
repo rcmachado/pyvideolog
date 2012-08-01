@@ -1,6 +1,4 @@
 from datetime import datetime
-import httplib
-import urllib
 import json
 import os
 import logging
